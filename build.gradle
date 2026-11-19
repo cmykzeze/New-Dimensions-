@@ -1,0 +1,45 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+    id 'maven-publish'
+}
+
+version = project.version
+group = project.group
+base { archivesName = 'ashen' }
+
+repositories { }
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand 'version': project.version }
+}
+
+tasks.withType(JavaCompile).configureEach { options.release = 25 }
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+// Guardrail: this milestone must remain completely entity-free.
+tasks.register('verifyTerrainOnly') {
+    doLast {
+        def biome = new groovy.json.JsonSlurper().parse(file('src/main/resources/data/ashen/worldgen/biome/ashen_wastes.json'))
+        def noise = new groovy.json.JsonSlurper().parse(file('src/main/resources/data/ashen/worldgen/noise_settings/ashen_noise.json'))
+        def spawnAttribute = biome.attributes['minecraft:gameplay/natural_mob_spawns']
+        if (spawnAttribute != null) {
+            def spawnData = spawnAttribute.argument
+            assert spawnData.spawns_by_category.isEmpty() : 'ASHEN must not define any natural entity spawns'
+            assert spawnData.spawn_costs.isEmpty() : 'ASHEN must not define spawn costs'
+        }
+        assert noise.disable_mob_generation == true : 'ASHEN noise settings must disable mob generation'
+        assert noise.spawn_target.isEmpty() : 'ASHEN noise settings must not define spawn targets'
+    }
+}
+tasks.named('build') { dependsOn tasks.named('verifyTerrainOnly') }

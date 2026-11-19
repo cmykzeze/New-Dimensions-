@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "ashen",
+  "version": "${version}",
+  "name": "ASHEN \u2014 The Ashen Reach",
+  "description": "A volcanic endgame dimension focused on world generation. This milestone intentionally contains no entities or natural mob spawns.",
+  "authors": [
+    "ASHEN Project"
+  ],
+  "contact": {
+    "sources": "https://github.com/cmykzeze/New-Dimensions-"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "depends": {
+    "fabricloader": ">=0.20.1",
+    "minecraft": "~26.3",
+    "java": ">=25"
+  }
+}

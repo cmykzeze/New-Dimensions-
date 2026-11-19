@@ -1,0 +1,11 @@
+{
+  "type": "ashen:ashen_type",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "ashen:ashen_wastes"
+    },
+    "settings": "ashen:ashen_noise"
+  }
+}
